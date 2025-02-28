@@ -1,7 +1,7 @@
 
 # libcpptest
 
-A modern C++ testing library.
+A C++ testing library.
 
 ## Table of Contents
 
@@ -28,11 +28,16 @@ This repository holds the source code, documentation and tests for the `C++` tes
 
 ## Features
 
+- Simple interface for creating and running tests
+- Integration test templates
+- Support for multiple test cases in one integration test object
+
 ## Usage
 
 ## Dependencies
 
 - <em>C++23</em>.
+- [libcpplog](https://github.com/kfpgk/libcpplog)
 
 ## Build
 
