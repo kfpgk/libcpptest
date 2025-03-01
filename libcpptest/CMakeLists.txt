@@ -23,6 +23,8 @@ install(FILES exception/Exception.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/excep
 install(FILES integration_test/TestCase.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
 install(FILES integration_test/MultiTest.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
 install(FILES integration_test/SingleTest.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
+install(FILES integration_test/Skeleton.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
+install(FILES config/cpptestConfig.cmake DESTINATION .)
 
 find_package(LIBCPPLOG
     NAMES
