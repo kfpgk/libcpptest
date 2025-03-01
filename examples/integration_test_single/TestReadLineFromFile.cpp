@@ -1,11 +1,10 @@
 #include <integration_test_single/TestReadLineFromFile.hpp>
 #include <integration_test_single/FileReader.hpp>
 
-#include <libcpptest/integration_test/TestCase.hpp>
 #include <libcpptest/exception/Exception.hpp>
 
 #include <fstream>
-#include <functional>
+#include <sstream>
 #include <string>
 
 namespace integration_test_single {
