@@ -15,11 +15,11 @@ namespace cpptest::integration_test {
     using namespace cpplog::logger;
     using namespace exception;
 
-    Skeleton::Skeleton(const std::string& name) :
-        name{name},
-        internalLogger{ std::in_place, std::cout, LogFormat::defaultValue() },
-        logger{ *internalLogger },
-        cwd{std::filesystem::current_path()} {
+    Skeleton::Skeleton(const std::string& name, Logger& logger) :
+        name{ name },
+        internalLogger{ std::nullopt },
+        logger{ logger },
+        cwd{ std::filesystem::current_path() } {
 
     }
 
@@ -27,14 +27,6 @@ namespace cpptest::integration_test {
         name{ name },
         internalLogger{ logger },
         logger{ *internalLogger },
-        cwd{ std::filesystem::current_path() } {
-
-    }
-
-    Skeleton::Skeleton(const std::string& name, Logger& logger) :
-        name{ name },
-        internalLogger { std::nullopt },
-        logger{ logger },
         cwd{ std::filesystem::current_path() } {
 
     }

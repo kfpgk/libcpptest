@@ -3,7 +3,7 @@
 
 #include <libcpptest/integration_test/TestCase.hpp>
 
-#include <libcpplog/logger/Logger.hpp>
+#include <libcpplog/logger/Log.hpp>
 
 #include <filesystem>
 #include <memory>
@@ -88,13 +88,14 @@ namespace cpptest::integration_test {
     protected:
         /**
          * @brief Constructor
-         * 
+         *
          * Protected constructor, as this class serves only as a
          * base for concrete test classes.
-         * 
+         *
          * @param[in] name Name of the test as is displayed in logs
+         * @param[in] logger A custom logger to be used for all outputs
          */
-        explicit Skeleton(const std::string& name);
+        Skeleton(const std::string& name, cpplog::logger::Logger& logger = cpplog::logger::logger);
 
         /**
          * @brief Constructor
@@ -106,17 +107,6 @@ namespace cpptest::integration_test {
          * @param[in] logger A custom logger to be used for all outputs
          */
         Skeleton(const std::string& name, const cpplog::logger::Logger& logger);
-
-        /**
-         * @brief Constructor
-         *
-         * Protected constructor, as this class serves only as a
-         * base for concrete test classes.
-         *
-         * @param[in] name Name of the test as is displayed in logs
-         * @param[in] logger A custom logger to be used for all outputs
-         */
-        Skeleton(const std::string& name, cpplog::logger::Logger& logger);
 
         ///< The logger to be used for all outputs including test results.
         cpplog::logger::Logger& logger;
