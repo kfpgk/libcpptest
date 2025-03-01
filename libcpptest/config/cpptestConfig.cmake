@@ -5,7 +5,7 @@ set(LIBCPPTEST_LIB_NAME libcpptest)
 if (WIN32)
     string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TO_UPPER)
     if (${CMAKE_BUILD_TYPE_TO_UPPER} STREQUAL "DEBUG")
-        set(LIBCPPLOG_LIB_NAME libcpptestd)
+        set(LIBCPPTEST_LIB_NAME libcpptestd)
     endif()  
 endif()
 
