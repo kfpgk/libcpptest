@@ -1,0 +1,14 @@
+@startuml class-diagram
+
+title libcpptest exception class diagram
+
+package exception {
+
+    class Exception {
+        == public ==
+        + Exception(string)
+    }
+
+}
+
+@enduml
