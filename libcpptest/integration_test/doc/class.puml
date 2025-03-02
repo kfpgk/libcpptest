@@ -12,9 +12,10 @@ package integration_test {
         + setKeepSandBox(bool) : void
         + setKeepOldSandBox(bool) : void
         == protected ==
+        # logger : Logger&
+        ..
         # Skeleton(string)
         # Skeleton(string, logger)
-        # logger : Logger&
         == private ==
         - internalLogger : Logger
         - {abstract} doRun() : bool
@@ -28,7 +29,15 @@ package integration_test {
     }
 
     class SingleTest {
+        == public ==
+        + run() : bool
+        + setExitOnFail(bool) : void
+        + setSkipCleanUp(bool) : void
+        + setKeepSandBox(bool) : void
+        + setKeepOldSandBox(bool) : void
         == protected ==
+        # logger : Logger&
+        ..
         # SingleTest(string)
         # SingleTest(string, Logger)
         == private ==
@@ -38,7 +47,15 @@ package integration_test {
     }
 
     class MultiTest {
+        == public ==
+        + run() : bool
+        + setExitOnFail(bool) : void
+        + setSkipCleanUp(bool) : void
+        + setKeepSandBox(bool) : void
+        + setKeepOldSandBox(bool) : void
         == protected ==
+        # logger : Logger&
+        ..
         # MultiTest(string)
         # MultiTest(string, Logger)
         ..
