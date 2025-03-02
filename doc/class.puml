@@ -1,0 +1,75 @@
+@startuml class-diagram
+
+title libcpptest public API class diagram
+
+package cpptest::exception {
+
+    class Exception {
+        == public ==
+        + Exception(string)
+    }
+
+}
+
+package cpptest::integration_test {
+
+    class SingleTest {
+        == public ==
+        + run() : bool
+        + setExitOnFail(bool) : void
+        + setSkipCleanUp(bool) : void
+        + setKeepSandBox(bool) : void
+        + setKeepOldSandBox(bool) : void
+        == protected ==
+        # SingleTest(string)
+        # SingleTest(string, Logger)
+        == private ==
+        .. override these ..
+        - {abstract} setup() : void
+        - {abstract} perform() : void
+        - {abstract} evaluate() : void
+        - {abstract} cleanUp() : void
+    }
+
+    class MultiTest {
+        == public ==
+        + run() : bool
+        + addTestCase(TestCase) : void
+        + setExitOnFail(bool) : void
+        + setSkipCleanUp(bool) : void
+        + setKeepSandBox(bool) : void
+        + setKeepOldSandBox(bool) : void
+        == protected ==
+        # MultiTest(string)
+        # MultiTest(string, Logger)
+        == private ==
+        .. override these ..
+        - {abstract} setup() : void
+        - {abstract} cleanUp() : void
+    }
+
+    struct TestCase {
+        + name : string
+        + perform : void(void)*
+        + evaluate : void(void)*
+    }
+
+}
+
+package <<external>> {
+    package cpplog::logger {
+        class Logger
+        hide Logger attributes
+        hide Logger methods
+    }
+}
+
+MultiTest o-- "*" TestCase
+
+MultiTest o-- "1" Logger
+SingleTest o-- "1" Logger
+
+Exception - MultiTest
+Exception - SingleTest
+
+@enduml

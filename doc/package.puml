@@ -1,0 +1,35 @@
+@startuml package-diagram
+
+title libcpptest package diagram
+
+package "Public Interface" as API
+
+package exception {
+   [Exception] 
+}
+
+package integration_test {
+    [MultiTest]
+    [SingleTest]
+    [TestCase]
+    [Skeleton]
+}
+
+package <<external>> {
+    package libcpplog {
+        [Logger]
+    }
+}
+
+API ..> Exception : <<import>>
+API ..> MultiTest : <<import>>
+API ..> SingleTest : <<import>>
+API ..> TestCase : <<import>>
+
+SingleTest ..> Skeleton : <<access>>
+MultiTest ..> Skeleton: <<access>>
+
+SingleTest ..> Logger : <<import>>
+MultiTest ..> Logger: <<import>>
+
+@enduml
