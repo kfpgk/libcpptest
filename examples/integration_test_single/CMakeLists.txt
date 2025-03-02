@@ -1,14 +1,7 @@
 add_executable(integration_test_single
     main.cpp
     FileReader.cpp 
-    "TestReadLineFromFile.cpp")
-
-find_package(LIBCPPLOG
-    NAMES
-        cpplog
-        libcpplog
-    REQUIRED
-)
+    TestReadLineFromFile.cpp)
 
 find_package(LIBCPPTEST
     NAMES
@@ -26,7 +19,5 @@ target_link_libraries(integration_test_single
 target_include_directories(integration_test_single
     PRIVATE
         ${CMAKE_SOURCE_DIR}
-        ${CMAKE_BINARY_DIR}
-        "${LIBCPPLOG_INCLUDE_DIRS}"
         "${LIBCPPTEST_INCLUDE_DIRS}"
 )

@@ -34,20 +34,15 @@ find_package(LIBCPPLOG
 )
 
 target_link_libraries(libcpptest
-    PRIVATE
+    PUBLIC
         ${LIBCPPLOG}
 )
 
 target_include_directories(libcpptest
     PRIVATE
         ${CMAKE_SOURCE_DIR}
-        ${CMAKE_BINARY_DIR}
+    PUBLIC
         "${LIBCPPLOG_INCLUDE_DIRS}"
-)
-
-target_sources(libcpptest
-    PRIVATE
-        "${LIBCPPLOG_INCLUDE_DIRS}/libcpplog/logger/Log.hpp"
 )
 
 if(BUILD_UNIT_TESTS)
