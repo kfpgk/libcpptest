@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
 
 #### Multi test case object.
 
-For implementing an integration test that includes multiple test cases, inherit from `MultiTest`. Optionally override the `setup()`�and `cleanUp()` methods. `perform()` and `evaluate()` methods are not available for multi test case objects. Instead create objects of type `Testcase` and add them to the integration test using `addTestCase()` inside the integration test class' constructor.
+For implementing an integration test that includes multiple test cases, inherit from `MultiTest`. Optionally override the `setup()` and `cleanUp()` methods. `perform()` and `evaluate()` methods are not available for multi test case objects. Instead create objects of type `Testcase` and add them to the integration test using `addTestCase()` inside the integration test class' constructor.
 
 A `TestCase` object is defined by a `name`, a `perform()` function and a `evaluate()` function. Check out the examples for guidance.
 
