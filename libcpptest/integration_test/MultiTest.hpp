@@ -37,6 +37,22 @@ namespace cpptest::integration_test {
 
     public:
         /**
+         * @brief Default destructor
+         */
+        virtual ~MultiTest() = default;
+
+        /**
+         * @brief Deleted copy constructor
+         */
+        MultiTest(const MultiTest&) = delete;
+
+        /**
+         * @brief Deleted copy assignment operator
+         */
+        MultiTest& operator==(const MultiTest& rhs) = delete;
+
+    protected:
+        /**
          * @brief Constructor
          *
          * Protected constructor, as this class serves only as a
@@ -67,23 +83,7 @@ namespace cpptest::integration_test {
          * @param[in] logger A custom logger to be used for all outputs
          */
         MultiTest(const std::string& name, cpplog::logger::Logger& logger);
-
-        /**
-         * @brief Default destructor
-         */
-        virtual ~MultiTest() = default;
-
-        /**
-         * @brief Deleted copy constructor
-         */
-        MultiTest(const MultiTest&) = delete;
-
-        /**
-         * @brief Deleted copy assignment operator
-         */
-        MultiTest& operator==(const MultiTest& rhs) = delete;
-
-    protected:
+        
         /**
          * @brief add a test case that will be executed upon a 
          * call to `run()`

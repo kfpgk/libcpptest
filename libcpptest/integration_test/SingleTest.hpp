@@ -37,6 +37,22 @@ namespace cpptest::integration_test {
 
     public:
         /**
+         * @brief Default destructor 
+         */
+        virtual ~SingleTest() = default;
+
+        /**
+         * @brief Deleted copy constructor
+         */
+        SingleTest(const SingleTest&) = delete;
+
+        /**
+         * @brief Deleted copy assignment operator
+         */
+        SingleTest& operator==(const SingleTest& rhs) = delete;
+
+    protected:
+        /**
          * @brief Constructor
          *
          * Protected constructor, as this class serves only as a
@@ -66,22 +82,7 @@ namespace cpptest::integration_test {
          * @param[in] name Name of the test as is displayed in logs
          * @param[in] logger A custom logger to be used for all outputs
          */
-        SingleTest(const std::string& name, cpplog::logger::Logger& logger);
-
-        /**
-         * @brief Default destructor 
-         */
-        virtual ~SingleTest() = default;
-
-        /**
-         * @brief Deleted copy constructor
-         */
-        SingleTest(const SingleTest&) = delete;
-
-        /**
-         * @brief Deleted copy assignment operator
-         */
-        SingleTest& operator==(const SingleTest& rhs) = delete;
+        SingleTest(const std::string& name, cpplog::logger::Logger& logger);        
 
     private:
         /**
