@@ -6,21 +6,26 @@ A C++ testing library.
 ## Table of Contents
 
 - [libcpptest](#libcpptest)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Usage](#usage)
-  - [Dependencies](#dependencies)
-  - [Build](#build)
-    - [Library](#library)
-    - [Tests](#tests)
-    - [Debug build](#debug-build)
-  - [Installation](#installation)
-    - [Windows](#windows)
-      - [Static release version](#static-release-version)
-      - [Static debug version](#static-debug-version)
-  - [Directory structure](#directory-structure)
-  - [License](#license)
+	- [Table of Contents](#table-of-contents)
+	- [Introduction](#introduction)
+	- [Features](#features)
+	- [Usage](#usage)
+		- [Headers](#headers)
+		- [Integration tests](#integration-tests)
+			- [Single test case object](#single-test-case-object)
+			- [Multi test case object.](#multi-test-case-object)
+	- [Dependencies](#dependencies)
+	- [Build](#build)
+		- [Library](#library)
+		- [Tests](#tests)
+		- [Debug build](#debug-build)
+	- [Installation](#installation)
+		- [Windows](#windows)
+			- [Static release version](#static-release-version)
+			- [Static debug version](#static-debug-version)
+	- [Directory structure](#directory-structure)
+	- [Contribute](#contribute)
+	- [License](#license)
 
 ## Introduction
 
@@ -33,6 +38,188 @@ This repository holds the source code, documentation and tests for the `C++` tes
 - Support for multiple test cases in one integration test object
 
 ## Usage
+
+### Headers
+
+The library provides the following headers.
+
+```cpp
+// libcpptest Exception class
+#include <libcpptest/exception/Exception.hpp>
+
+// Header for integration SingleTest class
+#include <libcpptest/integration_test/SingleTest.hpp>
+
+// Headers for integration MultiTest class
+#include <libcpptest/integration_test/MultiTest.hpp>
+#include <libcpptest/integration_test/TestCase.hpp>
+```
+
+### Integration tests
+
+The library provides an <em>integration_test</em> package. This package is based on the <em>Template</em> design pattern and users should create their own integration test classes by deriving from either `SingleTest` or the `MultiTest` class.
+
+By doing this, the written unit test will run inside a sandbox directory which gets cleaned up automatically after the test is finished.
+
+#### Single test case object
+
+For implementing a single test case integration test, create a class that derives from `SingleTest` and override the virtual methods `setup()`(optional), `perform()`(mandatory), `evaluate()`(mandatory) and `cleanUp()`(optional).
+
+When invoking the `run()` command on an object that is a subtype of `SingleTest`, the previously described methods are called in the given order.
+
+The complete example can be found in the <em>examples</em> sub directory.
+```cpp
+#include "FileReader.hpp"
+
+#include <libcpptest/integration_test/SingleTest.hpp>
+#include <libcpptest/exception/Exception.hpp>
+
+#include <fstream>
+#include <sstream>
+#include <string>
+
+class TestReadLineFromFile : public cpptest::integration_test::SingleTest {
+
+public:
+	explicit TestReadLineFromFile(const std::string& name) :
+		SingleTest(name) { }
+
+private:
+	std::string content; ///< Data passed from perform() to evaluate()
+
+	void setup() override {
+		std::ofstream testFile("testfile");
+		testFile << "This is some random content" << std::endl;
+	}
+
+	void perform() override {
+		FileReader fileReader("testfile");
+		content = fileReader.readLineFromFile();
+	}
+
+	void evaluate() override {
+		if (content != "This is some random content") {
+			std::stringstream message;
+			message << "Content '" << content << "' does not match expectation";
+			throw cpptest::exception::Exception(message.str());
+		}
+	}
+
+	void cleanUp() override {
+		/* Nothing to do, sandbox gets cleaned up by base class */
+	}
+};
+
+int main(int argc, char* argv[]) {
+
+	integration_test_single::TestReadLineFromFile test("Test read line from file");
+
+	test.run();
+
+	return 0;
+}
+```
+
+#### Multi test case object.
+
+For implementing an integration test that includes multiple test cases, inherit from `MultiTest`. Optionally override the `setup()`�and `cleanUp()` methods. `perform()` and `evaluate()` methods are not available for multi test case objects. Instead create objects of type `Testcase` and add them to the integration test using `addTestCase()` inside the integration test class' constructor.
+
+A `TestCase` object is defined by a `name`, a `perform()` function and a `evaluate()` function. Check out the examples for guidance.
+
+The complete example can be found in the <em>examples</em> sub directory.
+```cpp
+#include "FileReader.hpp"
+
+#include <libcpptest/integration_test/MultiTest.hpp>
+#include <libcpptest/integration_test/TestCase.hpp>
+#include <libcpptest/exception/Exception.hpp>
+
+#include <fstream>
+#include <functional>
+#include <string>
+
+class FileReaderTest : public MultiTest {
+
+public:
+	explicit FileReaderTest(const std::string& name) :
+		MultiTest(name) {
+
+		TestCase tc1{
+			.name = "Read a line from file",
+			.perform = std::bind(&FileReaderTest::performReadLine, this),
+			.evaluate = std::bind(&FileReaderTest::evaluateReadLine, this)
+		};
+		addTestCase(tc1);
+
+		TestCase tc2{
+			.name = "Read from non existing file",
+			.perform = std::bind(&FileReaderTest::performReadFromNonExisting, this),
+			.evaluate = std::bind(&FileReaderTest::evaluateReadFromNonExisting, this)
+		};
+		addTestCase(tc2);
+	}
+
+private:
+	std::string content; ///< Data passed from perform() to evaluate()
+	bool exceptionThrown; ///< Pass flag whether exception occured to evaluate()
+
+	void perform() override {
+		FileReader fileReader("testfile");
+		content = fileReader.readLineFromFile();
+	}
+
+	/**
+	 * @brief Test case 1
+	 */
+	void performReadLine() {
+		FileReader fileReader("testfile");
+		content = fileReader.readLineFromFile();
+	}
+
+	void evaluateReadLine() const {
+		if (content != "This is some random content") {
+			std::stringstream message;
+			message << "Content '" << content << "' does not match expectation";
+			throw cpptest::exception::Exception(message.str());
+		}
+	}
+
+	/**
+	 * @brief Test case 2
+	 */
+	void performReadFromNonExisting() {
+		exceptionThrown = false;
+		try {
+			FileReader fileReader("does-not-exist");
+			content = fileReader.readLineFromFile();
+		} catch (...) {
+			exceptionThrown = true;
+		}
+	}
+
+	void evaluateReadFromNonExisting() const {
+		if (exceptionThrown == false) {
+			std::stringstream message;
+			message << "Expected an exception, but it did not occur.";
+			throw cpptest::exception::Exception(message.str());
+		}
+	}
+
+	void cleanUp() override {
+		/* Nothing to do, sandbox gets cleaned up by base class */
+	}
+
+};
+
+int main(int argc, char* argv[]) {
+	
+	integration_test_multi::FileReaderTest test("Test FileReader functionality");
+
+	test.run();
+
+	return 0;
+}
+```
 
 ## Dependencies
 
@@ -76,7 +263,7 @@ Unit test names are preceded by `UT` in the result view.
 Use the `CMAKE_BUILD_TYPE` option to enable debug build.
 
 ```shell
-cd libcpplog
+cd libcpptest
 mkdir -p build/debug
 cd build/debug
 cmake -DCMAKE_BUILD_TYPE=DEBUG ../..
@@ -144,7 +331,7 @@ cmake --build . --target install --config Debug
 |   +- <em>example1</em>
 |       +- CMakeLists.txt
 |       +- *.cpp
-+- libcpplog                # C++ testing library
++- libcpptest                # C++ testing library
 |   +- doc
 |       +- *.puml           # UML diagram 
 |   +- CMakeLists.txt
@@ -157,7 +344,7 @@ cmake --build . --target install --config Debug
 |       +- *.cpp                        # Library source file
 |       +- *.hpp                        # Library header file
 |       +- *.tpp                        # Library template implementation file
-|       +- *.test.cpp                   # Unit tests source file
+|       +- *.test.cpp                   # Unit test source file
 |       +- *.test.hpp                   # Unit test header file
 |   +- <em>component2</em>                       # C++ testing library component sub directory
 |       +- doc
@@ -169,6 +356,15 @@ cmake --build . --target install --config Debug
 |       +- *.test.hpp
 +- CMakeLists.txt
 </pre>
+
+## Contribute
+
+Check the following things when contributing to this library:
+
+- [ ] UML diagrams affected by change and updated if necessary?
+- [ ] Unit tests added? Unit tests executed (called in the corresponding unit test main() function)? 
+- [ ] Unit tests run successfully?
+- [ ] Is the public API of the library affected by the change?
 
 ## License
 
