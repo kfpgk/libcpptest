@@ -42,7 +42,7 @@ target_include_directories(libcpptest
     PRIVATE
         ${CMAKE_SOURCE_DIR}
     PUBLIC
-        "${LIBCPPLOG_INCLUDE_DIRS}"
+        "${LIBCPPLOG_INCLUDE_DIR}"
 )
 
 if(BUILD_UNIT_TESTS)

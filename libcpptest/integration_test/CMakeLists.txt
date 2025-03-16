@@ -16,7 +16,7 @@ if(BUILD_UNIT_TESTS)
         PRIVATE
             ${CMAKE_SOURCE_DIR}
             ${CMAKE_BINARY_DIR}
-            "${LIBCPPLOG_INCLUDE_DIRS}"
+            "${LIBCPPLOG_INCLUDE_DIR}"
     )
     target_link_libraries(SingleTest_test
         PRIVATE
