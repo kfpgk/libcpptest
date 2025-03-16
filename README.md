@@ -1,8 +1,9 @@
-
+<a id="libcpptest"></a>
 # libcpptest
 
 A C++ testing library.
 
+<a id="table-of-contents"></a>
 ## Table of Contents
 
 - [libcpptest](#libcpptest)
@@ -13,7 +14,7 @@ A C++ testing library.
 		- [Headers](#headers)
 		- [Integration tests](#integration-tests)
 			- [Single test case object](#single-test-case-object)
-			- [Multi test case object.](#multi-test-case-object)
+			- [Multi test case object](#multi-test-case-object)
 	- [Dependencies](#dependencies)
 	- [Build](#build)
 		- [Library](#library)
@@ -27,18 +28,22 @@ A C++ testing library.
 	- [Contribute](#contribute)
 	- [License](#license)
 
+<a id="introduction"></a>
 ## Introduction
 
 This repository holds the source code, documentation and tests for the `C++` testing library `libcpptest`.
 
+<a id="features"></a>
 ## Features
 
 - Simple interface for creating and running tests
 - Integration test templates
 - Support for multiple test cases in one integration test object
 
+<a id="usage"></a>
 ## Usage
 
+<a id="headers"></a>
 ### Headers
 
 The library provides the following headers.
@@ -55,12 +60,14 @@ The library provides the following headers.
 #include <libcpptest/integration_test/TestCase.hpp>
 ```
 
+<a id="integration-tests"></a>
 ### Integration tests
 
 The library provides an <em>integration_test</em> package. This package is based on the <em>Template</em> design pattern and users should create their own integration test classes by deriving from either `SingleTest` or the `MultiTest` class.
 
 By doing this, the written unit test will run inside a sandbox directory which gets cleaned up automatically after the test is finished.
 
+<a id="single-test-case-object"></a>
 #### Single test case object
 
 For implementing a single test case integration test, create a class that derives from `SingleTest` and override the virtual methods `setup()`(optional), `perform()`(mandatory), `evaluate()`(mandatory) and `cleanUp()`(optional).
@@ -120,7 +127,8 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-#### Multi test case object.
+<a id="multi-test-case-object"></a>
+#### Multi test case object
 
 For implementing an integration test that includes multiple test cases, inherit from `MultiTest`. Optionally override the `setup()` and `cleanUp()` methods. `perform()` and `evaluate()` methods are not available for multi test case objects. Instead create objects of type `Testcase` and add them to the integration test using `addTestCase()` inside the integration test class' constructor.
 
@@ -221,13 +229,21 @@ int main(int argc, char* argv[]) {
 }
 ```
 
+<a id="dependencies"></a>
 ## Dependencies
 
 - <em>C++23</em>.
 - [libcpplog](https://github.com/kfpgk/libcpplog)
 
+<a id="build"></a>
 ## Build
 
+Fetch the repository:
+```shell
+git clone https://github.com/kfpgk/libcpptest.git
+```
+
+<a id="library"></a>
 ### Library
 
 Build the library:
@@ -239,6 +255,7 @@ cmake ../..
 cmake --build .
 ```
 
+<a id="tests"></a>
 ### Tests
 
 Set the `BUILD_UNIT_TESTS` option to build unit tests.
@@ -258,6 +275,7 @@ make test
 
 Unit test names are preceded by `UT` in the result view.
 
+<a id="debug-build"></a>
 ### Debug build
 
 Use the `CMAKE_BUILD_TYPE` option to enable debug build.
@@ -270,6 +288,7 @@ cmake -DCMAKE_BUILD_TYPE=DEBUG ../..
 cmake --build .
 ```
 
+<a id="installation"></a>
 ## Installation
 
 To install the library, follow these steps:
@@ -277,6 +296,7 @@ To install the library, follow these steps:
 Building a static library is the default.
 For building shared libraries use the <em>cmake</em> option `BUILD_SHARED_LIBS`. Examples see below.
 
+<a id="windows"></a>
 ### Windows
 
 <b>MSVC</b> requires dependencies to be the same type of build as the actual target executable. 
@@ -287,6 +307,7 @@ This way we can install both versions of the library next to each other. The rec
 can link to whichever build it needs.
 
 <a id="windows-static-release-install"></a>
+<a id="static-release-version"></a>
 #### Static release version
 Install instructions for the static release version using `powershell`.
 Use `-DCMAKE_INSTALL_PREFIX` only if you do not want to install to the default location.
@@ -305,6 +326,7 @@ cmake --build . --target install --config Release
 ```
 
 <a id="windows-static-debug-install"></a>
+<a id="static-debug-version"></a>
 #### Static debug version
 Install instructions for the static debug version using `powershell`.
 Use `-DCMAKE_INSTALL_PREFIX` only if you do not want to install to the default location.
@@ -357,6 +379,7 @@ cmake --build . --target install --config Debug
 +- CMakeLists.txt
 </pre>
 
+<a id="contribute"></a>
 ## Contribute
 
 Check the following things when contributing to this library:
@@ -366,6 +389,7 @@ Check the following things when contributing to this library:
 - [ ] Unit tests run successfully?
 - [ ] Is the public API of the library affected by the change?
 
+<a id="license"></a>
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU GENERAL PUBLIC LICENSE - see the [LICENSE](./LICENSE) file for details.

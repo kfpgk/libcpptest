@@ -108,25 +108,25 @@ namespace cpptest::integration_test {
          */
         Skeleton(const std::string& name, const cpplog::logger::Logger& logger);
 
-        ///< The logger to be used for all outputs including test results.
+        /// @brief The logger to be used for all outputs including test results
         cpplog::logger::Logger& logger;
 
     private:
         std::string name; ///< Name of the test
 
-        ///< internal Logger in case none is provided by client
+        /// @brief internal Logger in case none is provided by client
         std::optional<cpplog::logger::Logger> internalLogger;
 
         bool exitOnFail = true; ///< Exit if test fails
         bool keepSandBox = false; ///< Skip clean up of the sandbox
         bool keepOldSandBox = false; ///< Skip clean up of previous sandbox
-        ///< Skip entire clean up of sandbox and prevent test specific clean up call
+        /// @brief Skip entire clean up of sandbox and prevent test specific clean up call
         bool skipCleanUp = false; 
 
         std::filesystem::path cwd; ///< Stores current working directory to return to after test
 
-        ///< Remember if clean up has been called to prevent calling it twice 
-        ///< (e.g. in exception handler)
+        /// @brief Remember if clean up has been called to prevent calling it twice 
+        /// (e.g. in exception handler)
         bool cleanUpCalled = false; 
 
         /**
