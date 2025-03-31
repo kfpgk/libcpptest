@@ -1,10 +1,12 @@
+# Set path to subdirectory holding cmake scripts
+set(libcpptest_cmake_code_dir "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+include("${libcpptest_cmake_code_dir}/set-install-dirs.cmake")
+
 add_library(libcpptest)
 
-set_target_properties(libcpptest 
-    PROPERTIES 
-        PREFIX ""
-)
-
+# We want to install both release and debug build on Windows
+# Use postfix for unique file names
 if (WIN32)
     set_target_properties(libcpptest 
         PROPERTIES 
@@ -12,38 +14,30 @@ if (WIN32)
     )
 endif()
 
-install(TARGETS libcpptest
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)
-
-set(PUBLIC_INCLUDE_PREFIX include/libcpptest)
-install(FILES exception/Exception.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/exception)
-install(FILES integration_test/TestCase.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
-install(FILES integration_test/MultiTest.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
-install(FILES integration_test/SingleTest.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
-install(FILES integration_test/Skeleton.hpp DESTINATION ${PUBLIC_INCLUDE_PREFIX}/integration_test)
-install(FILES config/cpptestConfig.cmake DESTINATION .)
-
-find_package(LIBCPPLOG
+find_package(libcpplog
     NAMES
         cpplog
         libcpplog
     REQUIRED
 )
 
+get_target_property(libcpplog_INCLUDE_DIR CPPLOG::libcpplog INTERFACE_INCLUDE_DIRECTORIES)
+
 target_link_libraries(libcpptest
     PUBLIC
-        ${LIBCPPLOG}
+        libcpplog
 )
 
 target_include_directories(libcpptest
-    PRIVATE
-        ${CMAKE_SOURCE_DIR}
     PUBLIC
-        "${LIBCPPLOG_INCLUDE_DIR}"
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${libcpptest_INSTALL_INCLUDEDIR}>
+        "${libcpplog_INCLUDE_DIR}"
 )
+
+include("${libcpptest_cmake_code_dir}/install.cmake")
+
+include("${libcpptest_cmake_code_dir}/create-package.cmake")
 
 if(BUILD_UNIT_TESTS)
     enable_testing()

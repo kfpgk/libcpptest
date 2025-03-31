@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+
+check_required_components(libcpptest)
+
+include("${PACKAGE_PREFIX_DIR}/libcpptest/cmake/libcpptest-targets.cmake")
