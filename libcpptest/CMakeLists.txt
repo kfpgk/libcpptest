@@ -25,7 +25,7 @@ get_target_property(libcpplog_INCLUDE_DIR CPPLOG::libcpplog INTERFACE_INCLUDE_DI
 
 target_link_libraries(libcpptest
     PUBLIC
-        libcpplog
+        CPPLOG::libcpplog
 )
 
 target_include_directories(libcpptest

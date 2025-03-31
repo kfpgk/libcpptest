@@ -1,5 +1,8 @@
 @PACKAGE_INIT@
 
+include(CMakeFindDependencyMacro)
+find_dependency(libcpplog)
+
 check_required_components(libcpptest)
 
 include("${PACKAGE_PREFIX_DIR}/libcpptest/cmake/libcpptest-targets.cmake")
