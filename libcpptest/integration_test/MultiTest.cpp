@@ -47,7 +47,7 @@ namespace cpptest::integration_test {
             logger.log("Running " + std::to_string(noOfTestCases) + " testcase(s).");
             int count = 1;
             for (auto&& it = testCases.begin(); it != testCases.end(); it++, count++) {
-                logger << LogStream()
+                logger << LogRequest()
                        << "--- Running testcase " 
                        << count << "/" << noOfTestCases 
                        << " ---" << std::endl;
