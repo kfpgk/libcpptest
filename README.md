@@ -67,6 +67,9 @@ The library provides an <em>integration_test</em> package. This package is based
 
 By doing this, the written unit test will run inside a sandbox directory which gets cleaned up automatically after the test is finished.
 
+Any uncaught exception inside one of the overriden methods will lead to a <b>Fail</b> result of the test. If no exception occurs, the test is considered <b>Pass</b>.
+For consistent logging, throw an instance of `libcpptest::exception::Fail` in `evaluate()` if result did not match expectation.
+
 <a id="single-test-case-object"></a>
 #### Single test case object
 
@@ -79,7 +82,7 @@ The complete example can be found in the <em>examples</em> sub directory.
 #include "FileReader.hpp"
 
 #include <libcpptest/integration_test/SingleTest.hpp>
-#include <libcpptest/exception/Exception.hpp>
+#include <libcpptest/exception/Fail.hpp>
 
 #include <fstream>
 #include <sstream>
@@ -108,7 +111,7 @@ private:
 		if (content != "This is some random content") {
 			std::stringstream message;
 			message << "Content '" << content << "' does not match expectation";
-			throw cpptest::exception::Exception(message.str());
+			throw cpptest::exception::Fail(message.str());
 		}
 	}
 
@@ -140,7 +143,7 @@ The complete example can be found in the <em>examples</em> sub directory.
 
 #include <libcpptest/integration_test/MultiTest.hpp>
 #include <libcpptest/integration_test/TestCase.hpp>
-#include <libcpptest/exception/Exception.hpp>
+#include <libcpptest/exception/Fail.hpp>
 
 #include <fstream>
 #include <functional>
@@ -188,7 +191,7 @@ private:
 		if (content != "This is some random content") {
 			std::stringstream message;
 			message << "Content '" << content << "' does not match expectation";
-			throw cpptest::exception::Exception(message.str());
+			throw cpptest::exception::Fail(message.str());
 		}
 	}
 
@@ -209,7 +212,7 @@ private:
 		if (exceptionThrown == false) {
 			std::stringstream message;
 			message << "Expected an exception, but it did not occur.";
-			throw cpptest::exception::Exception(message.str());
+			throw cpptest::exception::Fail(message.str());
 		}
 	}
 

@@ -1,6 +1,6 @@
 #include <libcpptest/integration_test/MultiTestStub.test.hpp>
 #include <libcpptest/integration_test/TestCase.hpp>
-#include <libcpptest/exception/Exception.hpp>
+#include <libcpptest/integration_test/Fail.hpp>
 
 
 namespace cpptest::integration_test::unit_test {
@@ -52,7 +52,7 @@ namespace cpptest::integration_test::unit_test {
     void MultiTestStub::evaluateTestCase1() {
         evaluateCalled[0] = true;
         if (!testPasses[0]) {
-            throw exception::Exception("Test case 1 failed.");
+            throw Fail("Test case 1 failed.");
         }        
     }
 
@@ -63,7 +63,7 @@ namespace cpptest::integration_test::unit_test {
     void MultiTestStub::evaluateTestCase2() {
         evaluateCalled[1] = true;
         if (!testPasses[1]) {
-            throw exception::Exception("Test case 2 failed.");
+            throw Fail("Test case 2 failed.");
         }          
     }
 

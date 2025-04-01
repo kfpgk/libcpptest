@@ -1,5 +1,6 @@
 target_sources(libcpptest
     PRIVATE
+        Fail.cpp
         MultiTest.cpp
         SingleTest.cpp
         Skeleton.cpp

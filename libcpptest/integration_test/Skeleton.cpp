@@ -1,30 +1,30 @@
 #include <libcpptest/integration_test/Skeleton.hpp>
-#include <libcpptest/exception/Exception.hpp>
-#include <libcpptest/config/config.h>
+#include <libcpptest/integration_test/Fail.hpp>
+#include <libcpptest/config/config.hpp>
 
 #include <libcpplog/logger/Log.hpp>
 
 #include <filesystem>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <exception>
 
 namespace cpptest::integration_test {
 
     using namespace cpplog::logger;
-    using namespace exception;
 
-    Skeleton::Skeleton(const std::string& name, Logger& logger) :
-        name{ name },
+    Skeleton::Skeleton(std::string name, Logger& logger) :
+        name{ std::move(name) },
         internalLogger{ std::nullopt },
         logger{ logger },
         cwd{ std::filesystem::current_path() } {
 
     }
 
-    Skeleton::Skeleton(const std::string& name, const Logger& logger) :
-        name{ name },
+    Skeleton::Skeleton(std::string name, const Logger& logger) :
+        name{ std::move(name) },
         internalLogger{ logger },
         logger{ *internalLogger },
         cwd{ std::filesystem::current_path() } {
@@ -38,6 +38,14 @@ namespace cpptest::integration_test {
             wrapSetup();
             doRun();
             wrapCleanUp();
+        } catch (const Fail& e) {
+            logger.log(LogLevel::Error, e.what());
+            logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
+            wrapCleanUp();
+            if (exitOnFail) {
+                exit(-1);
+            }
+            return false;   
         } catch (const std::exception& e) {
             logger.log(LogLevel::Error, e.what());
             logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
@@ -46,6 +54,14 @@ namespace cpptest::integration_test {
                 exit(-1);
             }
             return false;        
+        } catch (...) {
+            logger.log(LogLevel::Error, "Unknown exception occured during test run");
+            logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
+            wrapCleanUp();
+            if (exitOnFail) {
+                exit(-1);
+            }
+            return false;
         }
 
         logger.log("--- test finished ---");
@@ -102,7 +118,7 @@ namespace cpptest::integration_test {
         }
         if (!std::filesystem::exists(directory)) {
             if (!std::filesystem::create_directory(directory)) {
-                throw Exception("Wasn't able to create directory '"
+                throw std::runtime_error("Wasn't able to create directory '"
                     + directory + "'.");
             }
         }     

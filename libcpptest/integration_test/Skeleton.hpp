@@ -95,7 +95,7 @@ namespace cpptest::integration_test {
          * @param[in] name Name of the test as is displayed in logs
          * @param[in] logger A custom logger to be used for all outputs
          */
-        Skeleton(const std::string& name, cpplog::logger::Logger& logger = cpplog::logger::logger);
+        Skeleton(std::string name, cpplog::logger::Logger& logger = cpplog::logger::logger);
 
         /**
          * @brief Constructor
@@ -106,13 +106,13 @@ namespace cpptest::integration_test {
          * @param[in] name Name of the test as is displayed in logs
          * @param[in] logger A custom logger to be used for all outputs
          */
-        Skeleton(const std::string& name, const cpplog::logger::Logger& logger);
+        Skeleton(std::string name, const cpplog::logger::Logger& logger);
 
         /// @brief The logger to be used for all outputs including test results
         cpplog::logger::Logger& logger;
 
     private:
-        std::string name; ///< Name of the test
+        const std::string name; ///< Name of the test
 
         /// @brief internal Logger in case none is provided by client
         std::optional<cpplog::logger::Logger> internalLogger;

@@ -1,5 +1,5 @@
 #include <libcpptest/integration_test/SingleTestStub.test.hpp>
-#include <libcpptest/exception/Exception.hpp>
+#include <libcpptest/integration_test/Fail.hpp>
 
 namespace cpptest::integration_test::unit_test {
 
@@ -36,7 +36,7 @@ namespace cpptest::integration_test::unit_test {
     void SingleTestStub::evaluate() {
         evaluateCalled = true;
         if (!testPasses) {
-            throw exception::Exception("Test failed.");
+            throw Fail("Test failed.");
         }
     }
 

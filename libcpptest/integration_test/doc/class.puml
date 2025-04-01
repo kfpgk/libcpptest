@@ -73,6 +73,11 @@ package integration_test {
         + evaluate : void(void)*
     }
 
+    class Fail {
+        == public ==
+        + Fail(string)
+    }
+
 }
 
 package <<external>> {
@@ -81,13 +86,23 @@ package <<external>> {
         hide Logger attributes
         hide Logger methods
     }
+
+    package std {
+        class logic_error
+        hide logic_error attributes
+        hide logic_error methods
+    }
 }
 
 MultiTest o-- "*" TestCase
 
-MultiTest --> Skeleton
-SingleTest --> Skeleton
+MultiTest --|> Skeleton
+SingleTest --|> Skeleton
 
 Skeleton o-- "1" Logger
+
+Skeleton --> Fail
+
+Fail --|> logic_error
 
 @enduml
