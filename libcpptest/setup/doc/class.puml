@@ -1,0 +1,31 @@
+@startuml class-diagram
+
+title libcpptest setup class diagram
+
+package setup {
+
+    class Sandbox {
+        == public ==
+        + Sandbox(string, Logger&)
+        + Sandbox(string, Logger&, bool)
+        + Sandbox(string, Logger&, bool, bool)
+        + ~Sandbox()
+        == private ==
+        - directoryPath : string
+        - logger : Logger&
+        - cwd : string
+        - keep : bool
+        - keepPrevious : bool
+}
+
+package <<external>> {
+    package cpplog::logger {
+        class Logger
+        hide Logger attributes
+        hide Logger methods
+    }
+}
+
+Sandbox --> Logger
+
+@enduml

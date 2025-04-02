@@ -24,7 +24,7 @@ namespace cpptest::integration_test {
      * This class is incomplete and only defines
      * setup and cleanup, but leaves test execution
      * and evaluation up to specializations. Dervied
-     * class define this via overriding `doRun()`.
+     * classes define this via overriding `doRun()`.
      * 
      * Patterns:
      *  - Template
@@ -49,27 +49,27 @@ namespace cpptest::integration_test {
         Skeleton& operator=(const Skeleton& rhs) = delete;
 
         /**
-         * @brief Set behavior when a fail is encountered
-         * in `run()` method.
+         * @brief Set behavior when a fail is encountered in `run()` method.
          * 
-         * -  true: exit fail
-         * - false: return `false` on first fail
+         * @param value Set to true to exit on fail and set to false to return false on first fail
          */
         void setExitOnFail(bool value) noexcept;
 
         /**
-         * @brief Set whether sandbox shall be cleaned up 
-         * after running this test.
+         * @brief Set whether sandbox shall be cleaned up  after running this test.
          * 
          * Useful to set to true when debugging tests.
+         * 
+         * @param[in] value Set to true to keep sandbox
          */
         void setKeepSandBox(bool value) noexcept;
 
         /**
-         * @brief Set whether previous sandbox gets cleaned up
-         * before running this test.
+         * @brief Set whether previous sandbox gets cleaned up before running this test.
+         *
+         * @param[in] value Set to true to keep previous sandbox
          */
-        void setKeepOldSandBox(bool value) noexcept;
+        void setKeepPreviousSandBox(bool value) noexcept;
 
         /**
          * @brief Set overall cleanup behavior
@@ -94,6 +94,11 @@ namespace cpptest::integration_test {
          *
          * @param[in] name Name of the test as is displayed in logs
          * @param[in] logger A custom logger to be used for all outputs
+         * 
+         * @details
+         * This constructor gets called also, when there is no logger object
+         * provided by the caller. In this case the global logger object
+         * from `libcpplog` gets used.
          */
         Skeleton(std::string name, cpplog::logger::Logger& logger = cpplog::logger::logger);
 
@@ -119,15 +124,13 @@ namespace cpptest::integration_test {
 
         bool exitOnFail = true; ///< Exit if test fails
         bool keepSandBox = false; ///< Skip clean up of the sandbox
-        bool keepOldSandBox = false; ///< Skip clean up of previous sandbox
+        bool keepPreviousSandBox = false; ///< Skip clean up of previous sandbox
         /// @brief Skip entire clean up of sandbox and prevent test specific clean up call
         bool skipCleanUp = false; 
 
-        std::filesystem::path cwd; ///< Stores current working directory to return to after test
-
-        /// @brief Remember if clean up has been called to prevent calling it twice 
-        /// (e.g. in exception handler)
-        bool cleanUpCalled = false; 
+        ///< Remember if clean up has been called to prevent calling it twice 
+        ///< (e.g. in exception handler)
+        bool cleanUpCalled = false;
 
         /**
          * @brief Wrap the virtual `setup()` method
@@ -166,15 +169,11 @@ namespace cpptest::integration_test {
         virtual void cleanUp();
 
         /**
-         * @brief Setup a sandbox for a concrete test class
-         * to be used
+         * @brief Defines behavior that is being performed on a failed test
+         * 
+         * Exits program if corresponding flag is set
          */
-        void setupSandBox(const std::string& directory);
-
-        /**
-         * @brief Clean up the previously created sand box
-         */
-        void cleanUpSandBox(const std::string& directory);
+        void handleFailAndMaybeExit();
 
     };
 

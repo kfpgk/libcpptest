@@ -80,6 +80,12 @@ package integration_test {
 
 }
 
+package setup {
+    class Sandbox
+    hide Sandbox attributes
+    hide Sandbox methods
+}
+
 package <<external>> {
     package cpplog::logger {
         class Logger
@@ -102,6 +108,7 @@ SingleTest --|> Skeleton
 Skeleton o-- "1" Logger
 
 Skeleton --> Fail
+Skeleton --> Sandbox
 
 Fail --|> logic_error
 

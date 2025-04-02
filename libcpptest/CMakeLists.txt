@@ -43,5 +43,5 @@ if(BUILD_UNIT_TESTS)
     enable_testing()
 endif()
 
-add_subdirectory(exception)
 add_subdirectory(integration_test)
+add_subdirectory(setup)

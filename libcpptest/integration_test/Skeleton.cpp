@@ -1,8 +1,10 @@
 #include <libcpptest/integration_test/Skeleton.hpp>
 #include <libcpptest/integration_test/Fail.hpp>
+#include <libcpptest/setup/Sandbox.hpp>
 #include <libcpptest/config/config.hpp>
 
 #include <libcpplog/logger/Log.hpp>
+#include <libcpplog/debug/Debug.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -18,49 +20,46 @@ namespace cpptest::integration_test {
     Skeleton::Skeleton(std::string name, Logger& logger) :
         name{ std::move(name) },
         internalLogger{ std::nullopt },
-        logger{ logger },
-        cwd{ std::filesystem::current_path() } {
+        logger{ logger } {
 
     }
 
     Skeleton::Skeleton(std::string name, const Logger& logger) :
         name{ std::move(name) },
         internalLogger{ logger },
-        logger{ *internalLogger },
-        cwd{ std::filesystem::current_path() } {
+        logger{ *internalLogger } {
 
     }
 
     bool Skeleton::run() {
         logger.log("Running integration test: '" + name + "'");
 
+        bool failed = false;
+
         try {
+            setup::Sandbox sandbox(
+                config::integration_sandbox_dir,
+                logger, 
+                keepSandBox,
+                keepPreviousSandBox);
             wrapSetup();
             doRun();
             wrapCleanUp();
         } catch (const Fail& e) {
+            logger.log(LogLevel::Info, "Fail detected");
             logger.log(LogLevel::Error, e.what());
-            logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
-            wrapCleanUp();
-            if (exitOnFail) {
-                exit(-1);
-            }
-            return false;   
+            failed = true;
         } catch (const std::exception& e) {
+            logger.log(LogLevel::Info, "std::exception detected. Set test result to failed.");
             logger.log(LogLevel::Error, e.what());
-            logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
-            wrapCleanUp();
-            if (exitOnFail) {
-                exit(-1);
-            }
-            return false;        
+            failed = true;
         } catch (...) {
             logger.log(LogLevel::Error, "Unknown exception occured during test run");
-            logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
-            wrapCleanUp();
-            if (exitOnFail) {
-                exit(-1);
-            }
+            failed = true;
+        }
+
+        if (failed) {
+            handleFailAndMaybeExit();
             return false;
         }
 
@@ -77,8 +76,8 @@ namespace cpptest::integration_test {
         this->keepSandBox = value;
     }
 
-    void Skeleton::setKeepOldSandBox(bool value) noexcept {
-        this->keepOldSandBox = value;
+    void Skeleton::setKeepPreviousSandBox(bool value) noexcept {
+        this->keepPreviousSandBox = value;
     }
 
     void Skeleton::setSkipCleanUp(bool value) noexcept {
@@ -87,47 +86,21 @@ namespace cpptest::integration_test {
 
     void Skeleton::wrapSetup() {
         logger.log("--- setup ---");
-        setupSandBox(config::integration_sandbox_dir);
         setup();
     }
 
     void Skeleton::wrapCleanUp() {
-        if (!cleanUpCalled) {
-            cleanUpCalled = true;
-            logger.log("--- clean up ---");
+        if (cleanUpCalled) {
+            logger.log("Clean up already called previously. Don't do it again.");
+        } else {
             if (skipCleanUp) {
                 logger.log("Skip clean up");
-                std::filesystem::current_path(cwd);
             } else {
+                logger.log("--- clean up ---");
+                cleanUpCalled = true;
                 cleanUp();
-                std::filesystem::current_path(cwd);
-                if (!keepSandBox) {
-                    cleanUpSandBox(config::integration_sandbox_dir);
-                }
             }
         }
-    }
-
-    void Skeleton::setupSandBox(const std::string& directory) {
-        logger.log(
-            "Creating integration test sandbox '" 
-            + std::filesystem::absolute(directory).string() + "'.");
-        this->cwd = std::filesystem::current_path();
-        if (!keepOldSandBox) {
-            std::filesystem::remove_all(directory);
-        }
-        if (!std::filesystem::exists(directory)) {
-            if (!std::filesystem::create_directory(directory)) {
-                throw std::runtime_error("Wasn't able to create directory '"
-                    + directory + "'.");
-            }
-        }     
-        std::filesystem::current_path(directory);
-    }
-
-    void Skeleton::cleanUpSandBox(const std::string& directory) {
-        logger.log("Cleaning up integration test sandbox directory '" + directory + "'.");
-        std::filesystem::remove_all(directory);
     }
 
     void Skeleton::setup() {
@@ -136,6 +109,14 @@ namespace cpptest::integration_test {
 
     void Skeleton::cleanUp() {
         logger.log("Custom cleanUp() not implemented");
+    }
+
+    void Skeleton::handleFailAndMaybeExit() {
+        logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
+        wrapCleanUp();
+        if (exitOnFail) {
+            exit(-1);
+        }
     }
 
 }
