@@ -4,8 +4,8 @@ title libcpptest package diagram
 
 package "Public Interface" as API
 
-package exception {
-   [Exception] 
+package setup {
+   [Sandbox] 
 }
 
 package integration_test {
@@ -13,6 +13,7 @@ package integration_test {
     [SingleTest]
     [TestCase]
     [Skeleton]
+    [Fail]
 }
 
 package <<external>> {
@@ -21,7 +22,7 @@ package <<external>> {
     }
 }
 
-API ..> Exception : <<import>>
+API ..> Fail : <<import>>
 API ..> MultiTest : <<import>>
 API ..> SingleTest : <<import>>
 API ..> TestCase : <<import>>
@@ -31,5 +32,7 @@ MultiTest ..> Skeleton: <<access>>
 
 SingleTest ..> Logger : <<import>>
 MultiTest ..> Logger: <<import>>
+
+Skeleton ..> Sandbox : <<access>>
 
 @enduml

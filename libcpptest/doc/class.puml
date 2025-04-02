@@ -2,16 +2,12 @@
 
 title libcpptest public API class diagram
 
-package cpptest::exception {
-
-    class Exception {
-        == public ==
-        + Exception(string)
-    }
-
-}
-
 package cpptest::integration_test {
+
+    class Fail {
+        == public ==
+        + Fail(string)
+    }
 
     class SingleTest {
         == public ==
@@ -62,6 +58,12 @@ package <<external>> {
         hide Logger attributes
         hide Logger methods
     }
+
+    package std {
+        class logic_error
+        hide logic_error attributes
+        hide logic_error methods
+    }
 }
 
 MultiTest o-- "*" TestCase
@@ -69,7 +71,9 @@ MultiTest o-- "*" TestCase
 MultiTest o-- "1" Logger
 SingleTest o-- "1" Logger
 
-Exception - MultiTest
-Exception - SingleTest
+Fail --|> logic_error
+
+MultiTest -- Fail 
+SingleTest -- Fail 
 
 @enduml
