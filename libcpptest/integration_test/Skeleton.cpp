@@ -42,9 +42,12 @@ namespace cpptest::integration_test {
                 logger, 
                 keepSandBox,
                 keepPreviousSandBox);
-            wrapSetup();
-            doRun();
-            wrapCleanUp();
+
+            { 
+                Setup setup(*this); /* Setup */
+                doRun();
+            } /* Clean up */
+            
         } catch (const Fail& e) {
             logger.log(LogLevel::Info, "Fail detected");
             logger.log(LogLevel::Error, e.what());
@@ -59,7 +62,10 @@ namespace cpptest::integration_test {
         }
 
         if (failed) {
-            handleFailAndMaybeExit();
+            logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
+            if (exitOnFail) {
+                exit(-1);
+            }
             return false;
         }
 
@@ -90,16 +96,11 @@ namespace cpptest::integration_test {
     }
 
     void Skeleton::wrapCleanUp() {
-        if (cleanUpCalled) {
-            logger.log("Clean up already called previously. Don't do it again.");
+        if (skipCleanUp) {
+            logger.log("Skip clean up");
         } else {
-            if (skipCleanUp) {
-                logger.log("Skip clean up");
-            } else {
-                logger.log("--- clean up ---");
-                cleanUpCalled = true;
-                cleanUp();
-            }
+            logger.log("--- clean up ---");
+            cleanUp();
         }
     }
 
@@ -111,12 +112,14 @@ namespace cpptest::integration_test {
         logger.log("Custom cleanUp() not implemented");
     }
 
-    void Skeleton::handleFailAndMaybeExit() {
-        logger.log(LogLevel::Result, "Integration test '" + name + "' failed.");
-        wrapCleanUp();
-        if (exitOnFail) {
-            exit(-1);
-        }
+    Skeleton::Setup::Setup(Skeleton& skeleton) :
+        skeleton{ skeleton } {
+
+        this->skeleton.wrapSetup();
+    }
+
+    Skeleton::Setup::~Setup() {
+        skeleton.wrapCleanUp();
     }
 
 }

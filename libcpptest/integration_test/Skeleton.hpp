@@ -26,6 +26,7 @@ namespace cpptest::integration_test {
      * and evaluation up to specializations. Dervied
      * classes define this via overriding `doRun()`.
      * 
+     * @details
      * Patterns:
      *  - Template
      *  - Non virtual interface
@@ -128,9 +129,30 @@ namespace cpptest::integration_test {
         /// @brief Skip entire clean up of sandbox and prevent test specific clean up call
         bool skipCleanUp = false; 
 
-        ///< Remember if clean up has been called to prevent calling it twice 
-        ///< (e.g. in exception handler)
-        bool cleanUpCalled = false;
+        /**
+         * @brief Setup object handling setup and clean up calls
+         * 
+         * @details
+         * Patterns
+         *  - RAII
+         */
+        class Setup {
+        
+        public:
+            /**
+             * @brief Constructor
+             * 
+             * @param[in] skeleton The skeleton object to be called for setup and clean up
+             */
+            Setup(Skeleton& skeleton);
+
+            /**
+             * @brief Destructor
+             */
+            ~Setup();
+        private:
+            Skeleton& skeleton; ///< The skeleton object for which setup and clean up gets called
+        };
 
         /**
          * @brief Wrap the virtual `setup()` method
@@ -167,13 +189,6 @@ namespace cpptest::integration_test {
          * test cases
          */
         virtual void cleanUp();
-
-        /**
-         * @brief Defines behavior that is being performed on a failed test
-         * 
-         * Exits program if corresponding flag is set
-         */
-        void handleFailAndMaybeExit();
 
     };
 

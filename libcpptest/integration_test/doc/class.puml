@@ -28,6 +28,14 @@ package integration_test {
         - cleanUpSandbox(string) : void
     }
 
+    class "Skeleton::Setup" as SkeletonSetup {
+        == public ==
+        + Setup(Skeleton&)
+        + ~Setup()
+        == private ==
+        - skeleton : Skeleton&
+    }
+
     class SingleTest {
         == public ==
         + run() : bool
@@ -106,6 +114,8 @@ MultiTest --|> Skeleton
 SingleTest --|> Skeleton
 
 Skeleton o-- "1" Logger
+
+SkeletonSetup -> Skeleton
 
 Skeleton --> Fail
 Skeleton --> Sandbox
