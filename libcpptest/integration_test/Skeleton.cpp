@@ -119,7 +119,14 @@ namespace cpptest::integration_test {
     }
 
     Skeleton::Setup::~Setup() {
-        skeleton.wrapCleanUp();
+        try {
+            skeleton.wrapCleanUp();
+        } catch(const std::exception& e) {
+            std::cerr << e.what() << '\n';
+        } catch(...) {
+            std::cerr << "Undefined exception occured\n";
+        }
+        
     }
 
 }
