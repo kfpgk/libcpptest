@@ -1,7 +1,7 @@
 set(libcpptest_TARGETS libcpptest-targets)
 
 set(PUBLIC_HEADERS
-    exception/Exception.hpp
+    integration_test/Fail.hpp
     integration_test/TestCase.hpp
     integration_test/MultiTest.hpp
     integration_test/SingleTest.hpp
@@ -16,13 +16,12 @@ install(TARGETS libcpptest
     INCLUDES DESTINATION "${libcpptest_INSTALL_INCLUDEDIR}"
 )
 
-foreach(header ${PUBLIC_HEADERS})
-    get_filename_component(header_dir ${header} DIRECTORY)
+foreach(header_file ${PUBLIC_HEADERS})
+    get_filename_component(header_dir ${header_file} DIRECTORY)
     install(
         FILES 
-            ${file} 
+            ${header_file} 
         DESTINATION 
             "${libcpptest_INSTALL_INCLUDEDIR}/libcpptest/${header_dir}"
-        COMPONENT
-            Devel)
+    )
 endforeach()
