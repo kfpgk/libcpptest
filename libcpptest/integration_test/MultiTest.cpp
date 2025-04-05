@@ -43,18 +43,19 @@ namespace cpptest::integration_test {
         if (noOfTestCases == 0) {
             logger.log(LogLevel::Warning, 
                 "This test contains no test cases. Add test cases with `addTestCase()`.");
-        } else {
-            logger.log("Running " + std::to_string(noOfTestCases) + " testcase(s).");
-            int count = 1;
-            for (auto&& it = testCases.begin(); it != testCases.end(); it++, count++) {
-                logger << LogRequest()
-                       << "--- Running testcase " 
-                       << count << "/" << noOfTestCases 
-                       << " ---" << std::endl;
-                wrapPerform(*it);
-                wrapEvaluate(*it);
-                logger.log("Testcase '" + it->name + "' passed.");
-            }
+            return;
+        }
+
+        logger.log("Running " + std::to_string(noOfTestCases) + " testcase(s).");
+        int count = 1;
+        for (auto&& it = testCases.begin(); it != testCases.end(); it++, count++) {
+            logger << LogRequest()
+                    << "--- Running testcase " 
+                    << count << "/" << noOfTestCases 
+                    << " ---" << std::endl;
+            wrapPerform(*it);
+            wrapEvaluate(*it);
+            logger.log("Testcase '" + it->name + "' passed.");
         }
     }
 
