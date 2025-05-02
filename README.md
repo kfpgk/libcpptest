@@ -273,7 +273,9 @@ cmake --build .
 
 Run the tests using `ctest`
 ```shell
-make test
+ctest -C Release
+# or depending on configuration
+ctest -C Debug
 ```
 
 Unit test names are preceded by `UT` in the result view.
